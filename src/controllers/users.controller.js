@@ -37,10 +37,21 @@ const deleteAllUsers = async (req, res) => {
   }
 };
 
+const createUser = async (req, res) => {
+  try {
+    const user = await usersService.create(req.body);
+    // 201 Created
+    res.status(201).json({ status: 'success', payload: user });
+  } catch (err) {
+    res.status(400).json({ status: 'error', error: err.message });
+  }
+};
+
 export default {
-    deleteUser,
-    getAllUsers,
-    getUser,
-    updateUser,
-    deleteAllUsers
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  deleteAllUsers,
+  createUser
 }
