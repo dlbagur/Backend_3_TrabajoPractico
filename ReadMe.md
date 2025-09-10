@@ -91,11 +91,14 @@ La imagen está disponible en:
 src/
  ├─ app.js
  ├─ server.js
- ├─ routes/
  ├─ controllers/
  ├─ dao/
+ ├─ dto/
+ ├─ middlewares/
+ ├─ public/
  ├─ repository/
+ ├─ routes/
  ├─ services/
- ├─ utils/
- └─ middlewares/
+ └─ utils/
+ 
 ```
