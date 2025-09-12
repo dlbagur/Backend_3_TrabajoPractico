@@ -16,7 +16,7 @@ COPY . .
 # Puerto de la app
 EXPOSE 8080
 
-# Variables por defecto (se pueden sobrescribir en docker run)
+# Variables por defecto (se pueden modificar en docker run)
 ENV PORT=8080
 
 # Arranque del servidor

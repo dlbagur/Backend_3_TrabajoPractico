@@ -1,104 +1,111 @@
-# Adopt-me API 🐾
-
-Proyecto desarrollado en **Node.js + Express + MongoDB**, con:
-- **Winston** para logging
-- **Swagger** para documentación
-- **Docker** para empaquetar y ejecutar la app fácilmente
+# Adopt-me API
+API de adopciones (**Users, Pets, Adoptions**) con **Express + Mongoose + Swagger + Winston**.  
+Incluye **mocks** para generar datos y **tests funcionales** para el router de Adoptions.
 
 ---
 
-## 🚀 Cómo iniciar el proyecto
+## Características
+- REST API con **Express**
+- **Mongoose** (MongoDB)
+- Documentación con **Swagger** en `/api-docs`
+- Logger **Winston**  
+  - Dev: nivel `debug` en consola  
+  - Prod: nivel `info` en consola y `error`+ en `errors.log`
+- **Mocks**: generación masiva de Users y Pets
+- **Tests funcionales** con **Mocha + Supertest** para `adoption.router.js`
+- Dockerfile + docker-compose (Mongo + App)
 
-### Requisitos
-- Node.js v18+
-- MongoDB en local o Atlas
+---
 
-### Instalación
+## Arranque local (sin Docker)
 ```bash
 npm install
-```
-
-### Correr en desarrollo
-```bash
 npm run dev
+# Swagger en http://localhost:8080/api-docs
 ```
 
-### Correr en producción
+Por defecto:
+- `PORT=8080`
+- `MONGO_URL=mongodb://localhost:27017/adoptme`
+
+---
+
+## Docker
+
+### Opción A — docker-compose (App + Mongo)
 ```bash
-NODE_ENV=production npm start
+docker compose up --build
 ```
+- App: `http://localhost:8080`  
+- Swagger: `http://localhost:8080/api-docs`
+
+**Comandos útiles:**
+- Parar: `Ctrl+C`  
+- Bajar contenedores: `docker compose down`  
+- Borrar datos de Mongo: `docker compose down -v`  
+- Logs app: `docker compose logs -f app`
+
+### Opción B — Solo la app (Mongo local o Atlas)
+
+**Build:**
+```bash
+docker build -t dlbagur/adoptme:1.0.0 .
+```
+
+**Run (Mongo local):**
+```bash
+docker run -p 8080:8080 `
+  -e NODE_ENV=production `
+  -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" `
+  --name adoptme-public dlbagur/adoptme:1.0.0
+```
+
+**Run (Mongo Atlas):**
+```bash
+docker run -p 8080:8080 `
+  -e NODE_ENV=production `
+  -e MONGO_URL="mongodb+srv://USER:PASS@CLUSTER/DB?retryWrites=true&w=majority" `
+  --name adoptme-public dlbagur/adoptme:1.0.0
+```
+
+### Imagen en Docker Hub
+- [dlbagur/adoptme](https://hub.docker.com/r/dlbagur/adoptme)  
+- Pull:
+  ```bash
+  docker pull dlbagur/adoptme:1.0.0
+  ```
 
 ---
 
-## 📚 Documentación de la API
-Swagger UI disponible en:
+## Swagger
+- UI: `GET /api-docs`  
+- JSON: `GET /api-docs.json`
 
-```
-http://localhost:8080/api-docs
-```
-
----
-
-## 🧾 Logging
-- **Desarrollo**: logs en consola desde nivel `debug`.
-- **Producción**: logs en consola desde nivel `info`, y además en archivo `errors.log` para `error` y `fatal`.
-
-Probar con:
-```
-GET http://localhost:8080/api/diag/loggerTest
-```
+Rutas principales:
+- **Users** → `/api/users`
+- **Pets** → `/api/pets`
+- **Adoptions** → `/api/adoptions`
+- **Mocks** → `/api/mocks`
 
 ---
 
-## 🧪 Tests
-Los tests funcionales (Mocha + Supertest) cubren el router de **Adoptions**.
-
-Ejecutar:
+## Tests (Mocha + Supertest)
 ```bash
 npm test
 ```
+- Usa `NODE_ENV=test` y `MONGO_URL_TEST` (`mongodb://localhost:27017/adoptme_test`)
+- Cubre todos los endpoints de `adoption.router.js`
+- Limpia la DB de tests al terminar
 
 ---
 
-## 🐳 Docker
-Este proyecto incluye un `Dockerfile` para crear una imagen.
-
-### Construir imagen
-```bash
-docker build -t tuusuario/adoptme:1.0.0 .
-```
-
-### Ejecutar contenedor
-```bash
-docker run -p 8080:8080 \
-  -e NODE_ENV=production \
-  -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" \
-  tuusuario/adoptme:1.0.0
-```
+## Troubleshooting
+- `ERR_CONNECTION_REFUSED` → verificar puerto mapeado en `docker-compose.yml`
+- `MongoParseError` → `MONGO_URL` debe empezar con `mongodb://` o `mongodb+srv://`
+- No se ven cambios en Docker → `docker compose up --build`
+- Resetear datos de Mongo → `docker compose down -v`
 
 ---
 
-## 📦 Imagen en Docker Hub
-La imagen está disponible en:
-
-👉 [Docker Hub - tuusuario/adoptme](https://hub.docker.com/r/tuusuario/adoptme)
-
----
-
-## 📂 Estructura del proyecto
-
-```
-src/
- ├─ app.js
- ├─ server.js
- ├─ controllers/
- ├─ dao/
- ├─ dto/
- ├─ middlewares/
- ├─ public/
- ├─ repository/
- ├─ routes/
- ├─ services/
- └─ utils/
- 
-```
+## Licencia
+MIT
